@@ -12,7 +12,7 @@
 
 ## 🇬🇧 English
 
-**Clippy** is a fast, lightweight and keyboard-first clipboard manager for Windows. It combines the power of [Ditto](https://ditto-cp.sourceforge.io/) with the simplicity of [Maccy](https://maccy.app/).
+**Clippy** is a fast, lightweight and keyboard-first clipboard manager for Windows.
 
 > 🔒 **Privacy-first** — All data is stored locally. Nothing is sent to the cloud.
 
@@ -97,8 +97,7 @@ Clippy/
 
 ## 🇹🇷 Türkçe
 
-**Clippy**, Windows için hızlı, hafif ve klavye odaklı bir clipboard manager uygulamasıdır. [Ditto](https://ditto-cp.sourceforge.io/)'nun gücünü ve [Maccy](https://maccy.app/)'nin sadeliğini bir araya getirir.
-
+**Clippy**, Windows için hızlı, hafif ve klavye odaklı bir clipboard manager uygulamasıdır.
 > 🔒 **Gizlilik öncelikli** — Tüm veriler yerel olarak saklanır, hiçbir veri dışarıya gönderilmez.
 
 ### ✨ Özellikler
