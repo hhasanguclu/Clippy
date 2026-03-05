@@ -1,0 +1,2 @@
+C:\test\Clippy\publish\Clippy.pdb
+C:\test\Clippy\publish\Clippy.exe

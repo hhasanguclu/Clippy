@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="0" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Tray Menü -->
+  <data name="TrayMenu_ShowHistory" xml:space="preserve"><value>Geçmişi Göster</value></data>
+  <data name="TrayMenu_PauseCapture" xml:space="preserve"><value>Yakalamayı Duraklat</value></data>
+  <data name="TrayMenu_ResumeCapture" xml:space="preserve"><value>Yakalamaya Devam Et</value></data>
+  <data name="TrayMenu_ClearHistory" xml:space="preserve"><value>Geçmişi Temizle</value></data>
+  <data name="TrayMenu_Settings" xml:space="preserve"><value>Ayarlar</value></data>
+  <data name="TrayMenu_Exit" xml:space="preserve"><value>Çıkış</value></data>
+  <data name="TrayMenu_IgnoreNext" xml:space="preserve"><value>Sonraki Kopyayı Yoksay</value></data>
+
+  <!-- Popup -->
+  <data name="Popup_Title" xml:space="preserve"><value>Clippy — Pano Geçmişi</value></data>
+  <data name="Popup_SearchPlaceholder" xml:space="preserve"><value>Pano geçmişinde ara...</value></data>
+  <data name="Popup_NoResults" xml:space="preserve"><value>Sonuç bulunamadı</value></data>
+  <data name="Popup_Pinned" xml:space="preserve"><value>📌 Sabitlenmiş</value></data>
+  <data name="Popup_ItemsCount" xml:space="preserve"><value>{0} öğe</value></data>
+
+  <!-- Bağlam Menüsü -->
+  <data name="Context_Pin" xml:space="preserve"><value>Sabitle</value></data>
+  <data name="Context_Unpin" xml:space="preserve"><value>Sabitliği Kaldır</value></data>
+  <data name="Context_Delete" xml:space="preserve"><value>Sil</value></data>
+  <data name="Context_CopyOnly" xml:space="preserve"><value>Sadece Kopyala</value></data>
+  <data name="Context_CopyAndPaste" xml:space="preserve"><value>Kopyala ve Yapıştır</value></data>
+
+  <!-- Ayarlar -->
+  <data name="Settings_Title" xml:space="preserve"><value>Clippy Ayarları</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>Dil</value></data>
+  <data name="Settings_MaxHistory" xml:space="preserve"><value>Maks. Geçmiş Sayısı</value></data>
+  <data name="Settings_Hotkey" xml:space="preserve"><value>Kısayol Tuşu</value></data>
+  <data name="Settings_StartWithWindows" xml:space="preserve"><value>Windows ile Başlat</value></data>
+  <data name="Settings_Save" xml:space="preserve"><value>Kaydet</value></data>
+  <data name="Settings_Cancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="Settings_RestartRequired" xml:space="preserve"><value>Dil değişikliği yeniden başlatma sonrası uygulanacaktır.</value></data>
+
+  <!-- İpuçları -->
+  <data name="Tooltip_TrayIcon" xml:space="preserve"><value>Clippy — Pano Yöneticisi</value></data>
+
+  <!-- Mesajlar -->
+  <data name="Msg_HistoryCleared" xml:space="preserve"><value>Pano geçmişi temizlendi</value></data>
+  <data name="Msg_CaptureResumed" xml:space="preserve"><value>Pano yakalama devam ediyor</value></data>
+  <data name="Msg_CapturePaused" xml:space="preserve"><value>Pano yakalama duraklatıldı</value></data>
+  <data name="Msg_IgnoreNextActive" xml:space="preserve"><value>Bir sonraki kopyalama yoksayılacak</value></data>
+  <data name="Msg_HotkeyFailed" xml:space="preserve"><value>Kısayol tuşu kaydedilemedi. Başka bir uygulama kullanıyor olabilir.</value></data>
+
+  <!-- Klavye İpuçları -->
+  <data name="Hint_Footer" xml:space="preserve"><value>Enter: Yapıştır | Shift+Enter: Düz Metin | Ctrl+P: Sabitle | Del: Sil | Esc: Kapat</value></data>
+</root>
