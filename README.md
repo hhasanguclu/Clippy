@@ -40,7 +40,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/USERNAME/Clippy.git
+git clone https://github.com/hhasanguclu/Clippy.git
 cd Clippy
 
 # Build and run
@@ -124,7 +124,7 @@ Clippy/
 
 ```bash
 # Projeyi klonla
-git clone https://github.com/KULLANICI_ADI/Clippy.git
+git clone https://github.com/hhasanguclu/Clippy.git
 cd Clippy
 
 # Derle ve çalıştır
