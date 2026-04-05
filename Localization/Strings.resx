@@ -34,10 +34,10 @@
     <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
   </resheader>
 
   <!-- Tray Menu -->
@@ -68,7 +68,7 @@
   <data name="Settings_Language" xml:space="preserve"><value>Language</value></data>
   <data name="Settings_MaxHistory" xml:space="preserve"><value>Max History Items</value></data>
   <data name="Settings_Hotkey" xml:space="preserve"><value>Hotkey</value></data>
-  <data name="Settings_StartWithWindows" xml:space="preserve"><value>Start with Windows</value></data>
+  <data name="Settings_StartWithWindows" xml:space="preserve"><value>Start with system</value></data>
   <data name="Settings_Save" xml:space="preserve"><value>Save</value></data>
   <data name="Settings_Cancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="Settings_RestartRequired" xml:space="preserve"><value>Language change will take effect after restart.</value></data>

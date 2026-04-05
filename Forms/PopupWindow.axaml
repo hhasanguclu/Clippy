@@ -1,0 +1,203 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:forms="clr-namespace:Clippy.Forms"
+        x:Class="Clippy.Forms.PopupWindow"
+        x:DataType="forms:PopupWindow"
+        Title="Clippy"
+        Width="680" Height="520"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Background="Transparent"
+        TransparencyLevelHint="AcrylicBlur,Transparent"
+        CanResize="False">
+
+  <!-- Outer border with rounded corners and shadow feel -->
+  <Border CornerRadius="12"
+          ClipToBounds="True"
+          BorderBrush="#30FFFFFF"
+          BorderThickness="1">
+
+    <!-- Acrylic background -->
+    <Panel>
+      <ExperimentalAcrylicBorder IsHitTestVisible="False">
+        <ExperimentalAcrylicBorder.Material>
+          <ExperimentalAcrylicMaterial BackgroundSource="Digger"
+                                       TintColor="#0A0A0F"
+                                       TintOpacity="0.82"
+                                       MaterialOpacity="0.9"
+                                       FallbackColor="#E0101018"/>
+        </ExperimentalAcrylicBorder.Material>
+      </ExperimentalAcrylicBorder>
+
+      <DockPanel>
+        <!-- ═══ HEADER ═══ -->
+        <Border DockPanel.Dock="Top"
+                Background="#20FFFFFF"
+                Padding="16,14"
+                CornerRadius="12,12,0,0">
+          <DockPanel>
+            <!-- Item count -->
+            <TextBlock DockPanel.Dock="Right"
+                       x:Name="CountLabel"
+                       VerticalAlignment="Center"
+                       Foreground="#80FFFFFF"
+                       FontSize="12"
+                       FontWeight="Medium"
+                       Margin="12,0,4,0"/>
+
+            <!-- Search box -->
+            <Border Background="#15FFFFFF"
+                    CornerRadius="8"
+                    Padding="4,0">
+              <DockPanel>
+                <!-- Search icon -->
+                <TextBlock DockPanel.Dock="Left"
+                           Text="🔍"
+                           FontSize="14"
+                           VerticalAlignment="Center"
+                           Margin="8,0,6,0"
+                           Opacity="0.5"/>
+                <TextBox x:Name="SearchBox"
+                         Watermark="Search clipboard history..."
+                         Background="Transparent"
+                         Foreground="#E0FFFFFF"
+                         CaretBrush="#80AACCFF"
+                         BorderThickness="0"
+                         FontSize="14"
+                         VerticalAlignment="Center"/>
+              </DockPanel>
+            </Border>
+          </DockPanel>
+        </Border>
+
+        <!-- ═══ FOOTER ═══ -->
+        <Border DockPanel.Dock="Bottom"
+                Background="#15FFFFFF"
+                Padding="12,8"
+                CornerRadius="0,0,12,12">
+          <TextBlock x:Name="FooterLabel"
+                     HorizontalAlignment="Center"
+                     Foreground="#50FFFFFF"
+                     FontSize="11"
+                     FontWeight="Light"
+                     LetterSpacing="0.3"/>
+        </Border>
+
+        <!-- ═══ LIST ═══ -->
+        <ListBox x:Name="HistoryList"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 Margin="6,4,6,4"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+          <ListBox.Styles>
+            <!-- ListBoxItem styling -->
+            <Style Selector="ListBoxItem">
+              <Setter Property="Padding" Value="0"/>
+              <Setter Property="Margin" Value="2,1"/>
+              <Setter Property="CornerRadius" Value="8"/>
+              <Setter Property="Background" Value="Transparent"/>
+            </Style>
+            <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+              <Setter Property="Background" Value="#15FFFFFF"/>
+            </Style>
+            <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+              <Setter Property="Background" Value="#30569CD6"/>
+            </Style>
+            <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter">
+              <Setter Property="Background" Value="#40569CD6"/>
+            </Style>
+          </ListBox.Styles>
+
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="forms:ClipboardEntryViewModel">
+              <Border Padding="12,10" CornerRadius="8">
+                <DockPanel>
+                  <!-- Timestamp right side -->
+                  <StackPanel DockPanel.Dock="Right"
+                              VerticalAlignment="Center"
+                              Margin="10,0,2,0"
+                              HorizontalAlignment="Right">
+                    <TextBlock Text="{Binding TimeText}"
+                               Foreground="#50FFFFFF"
+                               FontSize="11"
+                               HorizontalAlignment="Right"/>
+                    <TextBlock Text="{Binding SourceApp}"
+                               Foreground="#30FFFFFF"
+                               FontSize="9"
+                               HorizontalAlignment="Right"
+                               IsVisible="{Binding HasSourceApp}"
+                               Margin="0,2,0,0"/>
+                  </StackPanel>
+
+                  <!-- Image thumbnail (for image entries) -->
+                  <Border DockPanel.Dock="Left"
+                          IsVisible="{Binding IsImage}"
+                          Width="44" Height="44"
+                          CornerRadius="6"
+                          ClipToBounds="True"
+                          Margin="0,0,10,0"
+                          Background="#20FFFFFF">
+                    <Image Source="{Binding Thumbnail}"
+                           Stretch="UniformToFill"/>
+                  </Border>
+
+                  <!-- Content area -->
+                  <StackPanel VerticalAlignment="Center" MinHeight="28">
+                    <!-- Top row: badges + preview -->
+                    <DockPanel>
+                      <!-- Pin icon -->
+                      <Border DockPanel.Dock="Left"
+                              IsVisible="{Binding IsPinned}"
+                              Margin="0,0,6,0"
+                              VerticalAlignment="Center">
+                        <TextBlock Text="📌" FontSize="12"/>
+                      </Border>
+
+                      <!-- Type badge -->
+                      <Border DockPanel.Dock="Left"
+                              IsVisible="{Binding IsImage}"
+                              Background="#254EC9B0"
+                              CornerRadius="4"
+                              Padding="6,2"
+                              Margin="0,0,8,0"
+                              VerticalAlignment="Center">
+                        <TextBlock Text="IMG"
+                                   Foreground="#4EC9B0"
+                                   FontSize="10"
+                                   FontWeight="Bold"/>
+                      </Border>
+                      <Border DockPanel.Dock="Left"
+                              IsVisible="{Binding IsHtml}"
+                              Background="#25569CD6"
+                              CornerRadius="4"
+                              Padding="6,2"
+                              Margin="0,0,8,0"
+                              VerticalAlignment="Center">
+                        <TextBlock Text="HTML"
+                                   Foreground="#569CD6"
+                                   FontSize="10"
+                                   FontWeight="Bold"/>
+                      </Border>
+
+                      <!-- Preview text -->
+                      <TextBlock Text="{Binding Preview}"
+                                 Foreground="#D0FFFFFF"
+                                 FontSize="13"
+                                 TextTrimming="CharacterEllipsis"
+                                 MaxLines="2"
+                                 LineHeight="18"
+                                 VerticalAlignment="Center"/>
+                    </DockPanel>
+                  </StackPanel>
+                </DockPanel>
+              </Border>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </DockPanel>
+    </Panel>
+  </Border>
+</Window>

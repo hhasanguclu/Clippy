@@ -1,74 +1,73 @@
 using System;
-using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using SharpHook;
+using SharpHook.Native;
 
-namespace Clippy.Services
+namespace Clippy.Services;
+
+public class HotkeyManager : IDisposable
 {
-    public class HotkeyManager : IDisposable
+    private SimpleGlobalHook? _hook;
+    private bool _ctrlPressed;
+    private bool _shiftPressed;
+
+    public event Action? HotkeyPressed;
+
+    public bool Register()
     {
-        private const int HOTKEY_ID = 9000;
-        private readonly Form _listenerForm;
-        private bool _registered;
-
-        public event Action? HotkeyPressed;
-
-        public HotkeyManager()
+        try
         {
-            _listenerForm = new HotkeyListenerForm(this);
+            _hook = new SimpleGlobalHook();
+            _hook.KeyPressed += OnKeyPressed;
+            _hook.KeyReleased += OnKeyReleased;
+            Task.Run(() => _hook.Run());
+            return true;
         }
-
-        public bool Register(Keys key = Keys.V, uint modifiers = NativeMethods.MOD_CONTROL | NativeMethods.MOD_SHIFT)
+        catch
         {
-            if (_registered)
-                Unregister();
-
-            _registered = NativeMethods.RegisterHotKey(
-                _listenerForm.Handle,
-                HOTKEY_ID,
-                modifiers | NativeMethods.MOD_NOREPEAT,
-                (uint)key
-            );
-
-            return _registered;
+            return false;
         }
+    }
 
-        public void Unregister()
+    private void OnKeyPressed(object? sender, KeyboardHookEventArgs e)
+    {
+        switch (e.Data.KeyCode)
         {
-            if (_registered)
-            {
-                NativeMethods.UnregisterHotKey(_listenerForm.Handle, HOTKEY_ID);
-                _registered = false;
-            }
-        }
-
-        public void Dispose()
-        {
-            Unregister();
-            _listenerForm?.Dispose();
-        }
-
-        private class HotkeyListenerForm : Form
-        {
-            private readonly HotkeyManager _manager;
-
-            public HotkeyListenerForm(HotkeyManager manager)
-            {
-                _manager = manager;
-                ShowInTaskbar = false;
-                FormBorderStyle = FormBorderStyle.None;
-                Size = new System.Drawing.Size(0, 0);
-                Opacity = 0;
-                Show();
-                Hide();
-            }
-
-            protected override void WndProc(ref Message m)
-            {
-                if (m.Msg == NativeMethods.WM_HOTKEY && m.WParam.ToInt32() == HOTKEY_ID)
+            case KeyCode.VcLeftControl:
+            case KeyCode.VcRightControl:
+                _ctrlPressed = true;
+                break;
+            case KeyCode.VcLeftShift:
+            case KeyCode.VcRightShift:
+                _shiftPressed = true;
+                break;
+            case KeyCode.VcV:
+                if (_ctrlPressed && _shiftPressed)
                 {
-                    _manager.HotkeyPressed?.Invoke();
+                    HotkeyPressed?.Invoke();
                 }
-                base.WndProc(ref m);
-            }
+                break;
         }
+    }
+
+    private void OnKeyReleased(object? sender, KeyboardHookEventArgs e)
+    {
+        switch (e.Data.KeyCode)
+        {
+            case KeyCode.VcLeftControl:
+            case KeyCode.VcRightControl:
+                _ctrlPressed = false;
+                break;
+            case KeyCode.VcLeftShift:
+            case KeyCode.VcRightShift:
+                _shiftPressed = false;
+                break;
+        }
+    }
+
+    public void Dispose()
+    {
+        _hook?.Dispose();
     }
 }

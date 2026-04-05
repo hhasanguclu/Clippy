@@ -1,88 +1,73 @@
 using System;
-using System.Drawing;
-using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using Avalonia.Controls;
+using Avalonia.Input.Platform;
 using Clippy.Models;
+using SharpHook;
+using SharpHook.Native;
 
-namespace Clippy.Services
+namespace Clippy.Services;
+
+public class PasteService
 {
-    public class PasteService
+    /// <summary>
+    /// Places the entry content onto the clipboard via the given TopLevel.
+    /// </summary>
+    public async Task CopyToClipboard(TopLevel topLevel, ClipboardEntry entry)
     {
-        private IntPtr _previousForegroundWindow;
+        var clipboard = topLevel.Clipboard;
+        if (clipboard == null) return;
 
-        public void RememberForegroundWindow()
+        switch (entry.EntryType)
         {
-            _previousForegroundWindow = NativeMethods.GetForegroundWindow();
+            case ClipboardEntryType.Text:
+            case ClipboardEntryType.Html:
+                if (!string.IsNullOrEmpty(entry.Content))
+                    await clipboard.SetTextAsync(entry.Content);
+                break;
+            case ClipboardEntryType.Image:
+                // For images, copy the path as text (cross-platform limitation)
+                if (!string.IsNullOrEmpty(entry.ImagePath))
+                    await clipboard.SetTextAsync(entry.Content);
+                break;
         }
+    }
 
-        /// <summary>
-        /// Places the entry content back onto the clipboard in its original format.
-        /// </summary>
-        public void CopyToClipboard(ClipboardEntry entry, bool plainTextOnly = false)
+    /// <summary>
+    /// Copies entry to clipboard and simulates Ctrl+V paste.
+    /// </summary>
+    public async Task CopyAndPaste(TopLevel topLevel, ClipboardEntry entry)
+    {
+        await CopyToClipboard(topLevel, entry);
+        await Task.Delay(100);
+        SimulatePaste();
+    }
+
+    private void SimulatePaste()
+    {
+        try
         {
-            switch (entry.EntryType)
+            var simulator = new EventSimulator();
+
+            // Determine the correct modifier key based on OS
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                case ClipboardEntryType.Image:
-                    if (entry.ImagePath != null && File.Exists(entry.ImagePath))
-                    {
-                        using var img = Image.FromFile(entry.ImagePath);
-                        Clipboard.SetImage(img);
-                    }
-                    break;
-
-                case ClipboardEntryType.Html:
-                    if (plainTextOnly || string.IsNullOrEmpty(entry.HtmlContent))
-                    {
-                        Clipboard.SetText(entry.Content);
-                    }
-                    else
-                    {
-                        var dataObj = new DataObject();
-                        dataObj.SetData(DataFormats.Html, entry.HtmlContent);
-                        dataObj.SetData(DataFormats.UnicodeText, entry.Content);
-                        Clipboard.SetDataObject(dataObj, true);
-                    }
-                    break;
-
-                default: // Text
-                    if (!string.IsNullOrEmpty(entry.Content))
-                        Clipboard.SetText(entry.Content);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Copies entry to clipboard, activates previous window, sends Ctrl+V.
-        /// </summary>
-        public async Task CopyAndPaste(ClipboardEntry entry, bool plainTextOnly = false)
-        {
-            CopyToClipboard(entry, plainTextOnly);
-
-            if (_previousForegroundWindow != IntPtr.Zero)
-            {
-                await Task.Delay(50);
-                ActivateWindow(_previousForegroundWindow);
-                await Task.Delay(50);
-                SendKeys.SendWait("^v");
-            }
-        }
-
-        private void ActivateWindow(IntPtr hwnd)
-        {
-            var currentThread = NativeMethods.GetCurrentThreadId();
-            var targetThread = NativeMethods.GetWindowThreadProcessId(hwnd, out _);
-
-            if (currentThread != targetThread)
-            {
-                NativeMethods.AttachThreadInput(currentThread, targetThread, true);
-                NativeMethods.SetForegroundWindow(hwnd);
-                NativeMethods.AttachThreadInput(currentThread, targetThread, false);
+                // macOS uses Cmd+V
+                simulator.SimulateKeyPress(KeyCode.VcLeftMeta);
+                simulator.SimulateKeyPress(KeyCode.VcV);
+                simulator.SimulateKeyRelease(KeyCode.VcV);
+                simulator.SimulateKeyRelease(KeyCode.VcLeftMeta);
             }
             else
             {
-                NativeMethods.SetForegroundWindow(hwnd);
+                // Windows/Linux use Ctrl+V
+                simulator.SimulateKeyPress(KeyCode.VcLeftControl);
+                simulator.SimulateKeyPress(KeyCode.VcV);
+                simulator.SimulateKeyRelease(KeyCode.VcV);
+                simulator.SimulateKeyRelease(KeyCode.VcLeftControl);
             }
         }
+        catch { }
     }
 }

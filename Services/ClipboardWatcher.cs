@@ -1,213 +1,129 @@
 using System;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Windows.Forms;
+using System.Threading;
+using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Input.Platform;
 using Clippy.Models;
 
-namespace Clippy.Services
+namespace Clippy.Services;
+
+public class ClipboardWatcher : IDisposable
 {
-    public class ClipboardWatcher : IDisposable
+    private string _lastHash = string.Empty;
+    private bool _isPaused;
+    private bool _ignoreNext;
+    private readonly string _imagesDir;
+    private Timer? _pollTimer;
+    private Window? _hiddenWindow;
+
+    public event Action<ClipboardEntry>? ClipboardChanged;
+
+    public bool IsPaused
     {
-        private readonly ClipboardListenerForm _listenerForm;
-        private string _lastHash = string.Empty;
-        private bool _isPaused;
-        private bool _ignoreNext;
-        private readonly string _imagesDir;
+        get => _isPaused;
+        set => _isPaused = value;
+    }
 
-        public event Action<ClipboardEntry>? ClipboardChanged;
+    public ClipboardWatcher(string imagesDir)
+    {
+        _imagesDir = imagesDir;
+        Directory.CreateDirectory(_imagesDir);
+    }
 
-        public bool IsPaused
+    /// <summary>
+    /// Must be called from the UI thread after the application is initialized.
+    /// Creates a hidden window for clipboard access and starts polling.
+    /// </summary>
+    public void Start()
+    {
+        _hiddenWindow = new Window
         {
-            get => _isPaused;
-            set => _isPaused = value;
-        }
+            Width = 0,
+            Height = 0,
+            ShowInTaskbar = false,
+            SystemDecorations = SystemDecorations.None,
+            Opacity = 0,
+            IsVisible = false
+        };
+        // Show then immediately hide to initialize the platform handle
+        _hiddenWindow.Show();
+        _hiddenWindow.Hide();
 
-        public ClipboardWatcher(string imagesDir)
+        _pollTimer = new Timer(_ => PollClipboard(), null, 500, 500);
+    }
+
+    public void IgnoreNext()
+    {
+        _ignoreNext = true;
+    }
+
+    private void PollClipboard()
+    {
+        if (_isPaused) return;
+
+        try
         {
-            _imagesDir = imagesDir;
-            Directory.CreateDirectory(_imagesDir);
-            _listenerForm = new ClipboardListenerForm(this);
-        }
-
-        public void IgnoreNext()
-        {
-            _ignoreNext = true;
-        }
-
-        internal void OnClipboardUpdate()
-        {
-            if (_isPaused) return;
-
-            if (_ignoreNext)
+            Avalonia.Threading.Dispatcher.UIThread.Post(async () =>
             {
-                _ignoreNext = false;
-                return;
-            }
-
-            try
-            {
-                string sourceApp = GetSourceApp();
-
-                // Priority: Image > HTML > Text
-                if (Clipboard.ContainsImage())
+                try
                 {
-                    HandleImageClipboard(sourceApp);
+                    await CheckClipboardAsync();
                 }
-                else if (Clipboard.ContainsText(TextDataFormat.Html))
+                catch (Exception ex)
                 {
-                    HandleHtmlClipboard(sourceApp);
+                    Debug.WriteLine($"Clipboard poll error: {ex.Message}");
                 }
-                else if (Clipboard.ContainsText())
-                {
-                    HandleTextClipboard(sourceApp);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Clipboard read error: {ex.Message}");
-            }
+            });
         }
+        catch { }
+    }
 
-        private void HandleTextClipboard(string sourceApp)
+    private async Task CheckClipboardAsync()
+    {
+        if (_isPaused || _hiddenWindow == null) return;
+
+        var clipboard = TopLevel.GetTopLevel(_hiddenWindow)?.Clipboard;
+        if (clipboard == null) return;
+
+        var text = await clipboard.GetTextAsync();
+        if (string.IsNullOrWhiteSpace(text)) return;
+
+        var hash = ClipboardEntry.ComputeHash(text);
+        if (hash == _lastHash) return;
+
+        if (_ignoreNext)
         {
-            var text = Clipboard.GetText();
-            if (string.IsNullOrWhiteSpace(text)) return;
-
-            var hash = ClipboardEntry.ComputeHash(text);
-            if (hash == _lastHash) return;
+            _ignoreNext = false;
             _lastHash = hash;
-
-            var entry = new ClipboardEntry
-            {
-                Content = text,
-                Preview = ClipboardEntry.CreatePreview(text),
-                ContentHash = hash,
-                SourceApp = sourceApp,
-                EntryType = ClipboardEntryType.Text,
-                CreatedAt = DateTime.Now
-            };
-
-            ClipboardChanged?.Invoke(entry);
+            return;
         }
 
-        private void HandleHtmlClipboard(string sourceApp)
+        _lastHash = hash;
+
+        var entry = new ClipboardEntry
         {
-            var html = Clipboard.GetText(TextDataFormat.Html);
-            var plainText = Clipboard.ContainsText(TextDataFormat.UnicodeText)
-                ? Clipboard.GetText(TextDataFormat.UnicodeText)
-                : Clipboard.GetText();
+            Content = text,
+            Preview = ClipboardEntry.CreatePreview(text),
+            ContentHash = hash,
+            SourceApp = string.Empty,
+            EntryType = ClipboardEntryType.Text,
+            CreatedAt = DateTime.Now
+        };
 
-            if (string.IsNullOrWhiteSpace(plainText) && string.IsNullOrWhiteSpace(html)) return;
+        ClipboardChanged?.Invoke(entry);
+    }
 
-            var hashSource = !string.IsNullOrWhiteSpace(plainText) ? plainText : html;
-            var hash = ClipboardEntry.ComputeHash(hashSource);
-            if (hash == _lastHash) return;
-            _lastHash = hash;
+    public void UpdateLastHash(string hash)
+    {
+        _lastHash = hash;
+    }
 
-            var entry = new ClipboardEntry
-            {
-                Content = plainText ?? string.Empty,
-                HtmlContent = html,
-                Preview = ClipboardEntry.CreatePreview(plainText ?? "[HTML Content]"),
-                ContentHash = hash,
-                SourceApp = sourceApp,
-                EntryType = ClipboardEntryType.Html,
-                CreatedAt = DateTime.Now
-            };
-
-            ClipboardChanged?.Invoke(entry);
-        }
-
-        private void HandleImageClipboard(string sourceApp)
-        {
-            var image = Clipboard.GetImage();
-            if (image == null) return;
-
-            // Save image to disk
-            var fileName = $"clip_{DateTime.Now:yyyyMMdd_HHmmss_fff}.png";
-            var imagePath = Path.Combine(_imagesDir, fileName);
-
-            using (var bmp = new Bitmap(image))
-            {
-                bmp.Save(imagePath, ImageFormat.Png);
-            }
-
-            // Compute hash from file bytes
-            var fileBytes = File.ReadAllBytes(imagePath);
-            var hash = ClipboardEntry.ComputeHash(fileBytes);
-            if (hash == _lastHash)
-            {
-                // Duplicate — delete saved file
-                try { File.Delete(imagePath); } catch { }
-                return;
-            }
-            _lastHash = hash;
-
-            var entry = new ClipboardEntry
-            {
-                Content = $"[Image {image.Width}x{image.Height}]",
-                Preview = $"🖼 Image ({image.Width}×{image.Height})",
-                ImagePath = imagePath,
-                ContentHash = hash,
-                SourceApp = sourceApp,
-                EntryType = ClipboardEntryType.Image,
-                CreatedAt = DateTime.Now
-            };
-
-            image.Dispose();
-            ClipboardChanged?.Invoke(entry);
-        }
-
-        private string GetSourceApp()
-        {
-            try
-            {
-                var foreground = NativeMethods.GetForegroundWindow();
-                NativeMethods.GetWindowThreadProcessId(foreground, out uint pid);
-                var proc = Process.GetProcessById((int)pid);
-                return proc.ProcessName;
-            }
-            catch { return string.Empty; }
-        }
-
-        public void Dispose()
-        {
-            _listenerForm?.Dispose();
-        }
-
-        private class ClipboardListenerForm : Form
-        {
-            private readonly ClipboardWatcher _watcher;
-
-            public ClipboardListenerForm(ClipboardWatcher watcher)
-            {
-                _watcher = watcher;
-                ShowInTaskbar = false;
-                FormBorderStyle = FormBorderStyle.None;
-                Size = new System.Drawing.Size(0, 0);
-                Opacity = 0;
-                Show();
-                Hide();
-                NativeMethods.AddClipboardFormatListener(Handle);
-            }
-
-            protected override void WndProc(ref Message m)
-            {
-                if (m.Msg == NativeMethods.WM_CLIPBOARDUPDATE)
-                {
-                    _watcher.OnClipboardUpdate();
-                }
-                base.WndProc(ref m);
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                if (disposing)
-                    NativeMethods.RemoveClipboardFormatListener(Handle);
-                base.Dispose(disposing);
-            }
-        }
+    public void Dispose()
+    {
+        _pollTimer?.Dispose();
+        _hiddenWindow?.Close();
     }
 }
