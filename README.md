@@ -1,192 +1,202 @@
 <p align="center">
+  <img src="clippy_hero_image_1772738956761.png" alt="Clippy" width="720" />
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet" alt=".NET 8" />
-  <img src="https://img.shields.io/badge/platform-Windows-0078D6?logo=windows" alt="Windows" />
+  <img src="https://img.shields.io/badge/UI-Avalonia_11-8B5CF6?logo=data:image/svg+xml;base64," alt="Avalonia" />
+  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blue" alt="Platforms" />
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License" />
 </p>
 
-# 📋 Clippy — Windows Clipboard Manager
-
-🇬🇧 [English](#-english) · 🇹🇷 [Türkçe](#-türkçe)
+<h1 align="center">📋 Clippy</h1>
+<p align="center">Cross-platform clipboard manager — fast, keyboard-first, privacy-focused.</p>
 
 ---
 
-## 🇬🇧 English
+🇬🇧 [English](#english) · 🇹🇷 [Türkçe](#türkçe)
 
-**Clippy** is a fast, lightweight and keyboard-first clipboard manager for Windows.
+---
 
-> 🔒 **Privacy-first** — All data is stored locally. Nothing is sent to the cloud.
+## English
 
-### ✨ Features
+Clippy is a lightweight clipboard history manager that runs in the system tray. Press `Ctrl+Shift+V` anywhere to search and paste from your clipboard history. Built with .NET 8 and Avalonia UI, it runs natively on Windows, Linux and macOS.
 
-| Feature | Description |
-|---------|-------------|
-| 📋 **Clipboard History** | Automatically saves text, HTML, and image content |
-| ⌨️ **Global Hotkey** | Press `Ctrl+Shift+V` for instant popup |
-| 🔍 **Instant Search** | Fast filtering with keyboard navigation |
-| 📌 **Pin / Favorites** | Keep important items at the top |
-| 🖼️ **Image Support** | Stores copied images with thumbnail preview |
-| 📝 **Plain Text Paste** | Paste without formatting via `Shift+Enter` |
-| 🔐 **Privacy Controls** | Pause capture, ignore next copy |
-| 🌍 **Multi-Language** | English and Turkish UI |
-| 🚀 **Auto-Start** | Starts automatically with Windows |
-| 💾 **SQLite Database** | Persistent history across restarts |
+> All data is stored locally. Nothing leaves your machine.
 
-### 🛠️ Requirements
+### Features
 
-- **Windows 10/11** (x64)
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- Clipboard history with text, HTML and image support
+- Global hotkey (`Ctrl+Shift+V`) — works from any application
+- Instant fuzzy search with keyboard navigation
+- Pin important items to the top
+- Image thumbnails in the history list
+- Plain-text paste with `Shift+Enter`
+- Pause capture / ignore next copy
+- Auto-start with the operating system
+- English and Turkish UI
+- Acrylic blur popup with dark theme
+- SQLite-backed persistent storage
 
-### 🚀 Getting Started
-
-```bash
-# Clone the repository
-git clone https://github.com/hhasanguclu/Clippy.git
-cd Clippy
-
-# Build and run
-dotnet build Clippy\Clippy.csproj -c Release
-dotnet run --project Clippy\Clippy.csproj
-```
-
-### ⌨️ Keyboard Shortcuts
+### Keyboard Shortcuts
 
 | Shortcut | Action |
-|----------|--------|
-| `Ctrl+Shift+V` | Open / close popup |
-| `Enter` | Copy selected item |
+|---|---|
+| `Ctrl+Shift+V` | Toggle popup |
+| `Enter` | Paste selected item |
 | `Shift+Enter` | Paste as plain text |
-| `Delete` | Delete selected item |
-| `Ctrl+P` | Pin / Unpin |
+| `Ctrl+P` | Pin / unpin |
+| `Delete` | Delete item |
 | `Esc` | Close popup |
-| `↑` `↓` | Navigate the list |
+| `↑` `↓` | Navigate |
 
-### 📁 Project Structure
+### Requirements
 
-```
-Clippy/
-├── Clippy.sln
-└── Clippy/
-    ├── Program.cs              # Application entry point
-    ├── TrayContext.cs           # System tray management
-    ├── NativeMethods.cs         # Windows API calls
-    ├── Forms/
-    │   ├── PopupForm.cs         # Clipboard history popup
-    │   └── SettingsForm.cs      # Settings window
-    ├── Models/
-    │   └── ClipboardEntry.cs    # Clipboard data model
-    ├── Services/
-    │   ├── ClipboardWatcher.cs  # Clipboard listener
-    │   ├── DatabaseService.cs   # SQLite database
-    │   ├── HistoryManager.cs    # History management
-    │   ├── HotkeyManager.cs     # Global hotkey
-    │   ├── PasteService.cs      # Paste service
-    │   └── StartupService.cs    # Windows startup service
-    └── Localization/
-        ├── L.cs                 # Language manager
-        ├── Strings.resx         # English strings
-        └── Strings.tr.resx     # Turkish strings
-```
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (build only)
+- Windows 10+, Ubuntu 20.04+ / Fedora 38+, or macOS 12+
 
-### 🧰 Technologies
-
-- **.NET 8.0** — Modern runtime
-- **Windows Forms** — Native Windows UI
-- **SQLite** (Microsoft.Data.Sqlite) — Local database
-
----
-
-## 🇹🇷 Türkçe
-
-**Clippy**, Windows için hızlı, hafif ve klavye odaklı bir clipboard manager uygulamasıdır.
-> 🔒 **Gizlilik öncelikli** — Tüm veriler yerel olarak saklanır, hiçbir veri dışarıya gönderilmez.
-
-### ✨ Özellikler
-
-| Özellik | Açıklama |
-|---------|----------|
-| 📋 **Clipboard Geçmişi** | Text, HTML ve image içerikleri otomatik kaydeder |
-| ⌨️ **Global Hotkey** | `Ctrl+Shift+V` ile anında popup pencere |
-| 🔍 **Anlık Arama** | Geçmişte hızlı filtreleme ve klavye navigasyonu |
-| 📌 **Sabitleme** | Önemli öğeleri üstte tutun |
-| 🖼️ **Resim Desteği** | Kopyalanan görselleri thumbnail ile saklar |
-| 📝 **Düz Metin Yapıştırma** | `Shift+Enter` ile formatsız yapıştırma |
-| 🔐 **Gizlilik** | Yakalamayı duraklat, sonraki kopyayı yoksay |
-| 🌍 **Çoklu Dil** | Türkçe ve İngilizce arayüz desteği |
-| 🚀 **Otomatik Başlatma** | Windows ile birlikte otomatik başlar |
-| 💾 **SQLite Veritabanı** | Kalıcı geçmiş, yeniden başlatmada kaybolmaz |
-
-### 🛠️ Gereksinimler
-
-- **Windows 10/11** (x64)
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-
-### 🚀 Başlangıç
+### Build & Run
 
 ```bash
-# Projeyi klonla
-git clone https://github.com/hhasanguclu/Clippy.git
+git clone https://github.com/user/Clippy.git
 cd Clippy
-
-# Derle ve çalıştır
-dotnet build Clippy\Clippy.csproj -c Release
-dotnet run --project Clippy\Clippy.csproj
+dotnet run --project Clippy/Clippy.csproj
 ```
 
-### ⌨️ Kısayollar
+### Publish
 
-| Kısayol | İşlev |
-|---------|-------|
-| `Ctrl+Shift+V` | Popup pencereyi aç/kapat |
-| `Enter` | Seçili öğeyi kopyala |
-| `Shift+Enter` | Düz metin olarak yapıştır |
-| `Delete` | Seçili öğeyi sil |
-| `Ctrl+P` | Sabitle / Sabitlemeden çıkar |
-| `Esc` | Pencereyi kapat |
-| `↑` `↓` | Listede gezin |
+```bash
+# Windows
+publish-win.bat
 
-### 📁 Proje Yapısı
+# Linux
+chmod +x publish-linux.sh && ./publish-linux.sh
+
+# macOS (arm64 default, pass x64 for Intel)
+chmod +x publish-macos.sh && ./publish-macos.sh
+```
+
+### Create Installers
+
+```bash
+# Windows — requires Inno Setup 6+ (https://jrsoftware.org/isdl.php)
+# Open setup.iss in Inno Setup and compile.
+
+# Linux — creates .tar.gz + .deb
+chmod +x setup-linux.sh && ./setup-linux.sh
+
+# macOS — creates .app bundle + .dmg
+chmod +x setup-macos.sh && ./setup-macos.sh
+```
+
+### Project Structure
 
 ```
 Clippy/
-├── Clippy.sln
-└── Clippy/
-    ├── Program.cs              # Uygulama giriş noktası
-    ├── TrayContext.cs           # System tray yönetimi
-    ├── NativeMethods.cs         # Windows API çağrıları
-    ├── Forms/
-    │   ├── PopupForm.cs         # Clipboard geçmişi popup'ı
-    │   └── SettingsForm.cs      # Ayarlar penceresi
-    ├── Models/
-    │   └── ClipboardEntry.cs    # Clipboard veri modeli
-    ├── Services/
-    │   ├── ClipboardWatcher.cs  # Clipboard dinleyici
-    │   ├── DatabaseService.cs   # SQLite veritabanı
-    │   ├── HistoryManager.cs    # Geçmiş yönetimi
-    │   ├── HotkeyManager.cs     # Global hotkey
-    │   ├── PasteService.cs      # Yapıştırma servisi
-    │   └── StartupService.cs    # Windows başlangıç servisi
-    └── Localization/
-        ├── L.cs                 # Dil yöneticisi
-        ├── Strings.resx         # İngilizce metinler
-        └── Strings.tr.resx     # Türkçe metinler
+├── Program.cs                  # Entry point, Avalonia AppBuilder
+├── App.axaml / App.axaml.cs    # Application lifecycle, tray icon, services
+├── Assets/
+│   └── TrayIconGenerator.cs    # Programmatic tray icon
+├── Forms/
+│   ├── PopupWindow.axaml(.cs)  # Clipboard history popup (acrylic blur)
+│   └── SettingsWindow.axaml(.cs)
+├── Models/
+│   └── ClipboardEntry.cs       # Data model
+├── Services/
+│   ├── ClipboardWatcher.cs     # Clipboard polling (cross-platform)
+│   ├── DatabaseService.cs      # SQLite persistence
+│   ├── HistoryManager.cs       # History logic
+│   ├── HotkeyManager.cs        # Global hotkey via SharpHook
+│   ├── PasteService.cs         # Paste simulation (Ctrl+V / Cmd+V)
+│   └── StartupService.cs       # Auto-start (Registry / XDG / LaunchAgent)
+└── Localization/
+    ├── L.cs                    # Resource manager
+    ├── Strings.resx            # English
+    └── Strings.tr.resx         # Turkish
 ```
 
-### 🧰 Teknolojiler
+### Tech Stack
 
-- **.NET 8.0** — Modern runtime
-- **Windows Forms** — Native Windows UI
-- **SQLite** (Microsoft.Data.Sqlite) — Yerel veritabanı
-
----
-
-## 📄 License / Lisans
-
-This project is licensed under the [MIT](LICENSE) license.
-
-Bu proje [MIT](LICENSE) lisansı ile lisanslanmıştır.
+- .NET 8.0
+- Avalonia UI 11 (cross-platform UI framework)
+- SharpHook (global keyboard hook & input simulation)
+- Microsoft.Data.Sqlite (local database)
 
 ---
 
-<p align="center">
-  <b>Clippy</b> — Your clipboard history, always at your fingertips! 📋✨
-</p>
+## Türkçe
+
+Clippy, system tray'de çalışan hafif bir pano geçmişi yöneticisidir. Herhangi bir uygulamadayken `Ctrl+Shift+V` ile pano geçmişinizi arayıp yapıştırabilirsiniz. .NET 8 ve Avalonia UI ile geliştirilmiştir; Windows, Linux ve macOS'ta çalışır.
+
+> Tüm veriler yerel olarak saklanır. Hiçbir şey dışarıya gönderilmez.
+
+### Özellikler
+
+- Metin, HTML ve görsel desteğiyle pano geçmişi
+- Global kısayol (`Ctrl+Shift+V`) — her uygulamadan erişim
+- Anlık arama ve klavye navigasyonu
+- Önemli öğeleri sabitleme
+- Görsel küçük resimleri (thumbnail)
+- `Shift+Enter` ile düz metin yapıştırma
+- Yakalamayı duraklat / sonraki kopyayı yoksay
+- İşletim sistemiyle otomatik başlatma
+- Türkçe ve İngilizce arayüz
+- Acrylic blur efektli koyu tema popup
+- SQLite ile kalıcı depolama
+
+### Kısayollar
+
+| Kısayol | İşlev |
+|---|---|
+| `Ctrl+Shift+V` | Popup aç/kapat |
+| `Enter` | Seçili öğeyi yapıştır |
+| `Shift+Enter` | Düz metin olarak yapıştır |
+| `Ctrl+P` | Sabitle / kaldır |
+| `Delete` | Öğeyi sil |
+| `Esc` | Kapat |
+| `↑` `↓` | Listede gezin |
+
+### Gereksinimler
+
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (sadece derleme için)
+- Windows 10+, Ubuntu 20.04+ / Fedora 38+ veya macOS 12+
+
+### Derleme ve Çalıştırma
+
+```bash
+git clone https://github.com/user/Clippy.git
+cd Clippy
+dotnet run --project Clippy/Clippy.csproj
+```
+
+### Yayınlama
+
+```bash
+# Windows
+publish-win.bat
+
+# Linux
+chmod +x publish-linux.sh && ./publish-linux.sh
+
+# macOS (varsayılan arm64, Intel için x64 verin)
+chmod +x publish-macos.sh && ./publish-macos.sh
+```
+
+### Kurulum Dosyaları Oluşturma
+
+```bash
+# Windows — Inno Setup 6+ gerekli (https://jrsoftware.org/isdl.php)
+# setup.iss dosyasını Inno Setup ile açıp derleyin.
+
+# Linux — .tar.gz + .deb oluşturur
+chmod +x setup-linux.sh && ./setup-linux.sh
+
+# macOS — .app bundle + .dmg oluşturur
+chmod +x setup-macos.sh && ./setup-macos.sh
+```
+
+---
+
+## License / Lisans
+
+[MIT](LICENSE)
